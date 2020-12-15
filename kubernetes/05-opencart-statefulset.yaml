@@ -76,7 +76,7 @@ spec:
             - name: OPENCART_SKIP_BOOTSTRAP
               value: "yes"
             - name: OPENCART_HOST
-              value: "oc-$${OCINSTANCE}.opencart.tkg-cluster-03.cmbu.local"
+              value: "oc-$${OCINSTANCE}.opencart.moad.cmbu.local"
             - name: OPENCART_USERNAME
               value: "$${OCUSER}"
             - name: OPENCART_PASSWORD
