@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: oc-$${OCINSTANCE}
   namespace: opencart
@@ -121,13 +121,18 @@ spec:
               cpu: 300m
               memory: 512Mi
           volumeMounts:
-            - name: opencart-data
+            - name: oc-$${OCINSTANCE}-data
               mountPath: /bitnami/opencart
               subPath: opencart
-            - name: opencart-data
+            - name: oc-$${OCINSTANCE}-data
               mountPath: /bitnami/opencart_storage
               subPath: opencart_storage
-      volumes:
-        - name: opencart-data
-          persistentVolumeClaim:
-            claimName: oc-$${OCINSTANCE}
+  volumeClaimTemplates:
+  - metadata:
+      name: oc-$${OCINSTANCE}-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "vsan-default-storage-policy (default)"
+      resources:
+        requests:
+          storage: 2Gi
