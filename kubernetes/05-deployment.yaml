@@ -45,7 +45,7 @@ spec:
             - "status.localhost"
       initContainers:
       containers:
-        - name: opencart-moad
+        - name: oc-$${OCINSTANCE}
           image: docker.io/bitnami/opencart:3.0.3-6-debian-10-r124
           imagePullPolicy: "IfNotPresent"
           securityContext:
