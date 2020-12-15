@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: oc-$${OCINSTANCE}
+  labels:
+    app.kubernetes.io/name: opencart
+    app.kubernetes.io/instance: oc-$${OCINSTANCE}
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "2Gi"
