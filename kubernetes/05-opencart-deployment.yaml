@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: oc-$${OCINSTANCE}
+  namespace: opencart
   labels:
     app.kubernetes.io/name: opencart
     app.kubernetes.io/instance: oc-$${OCINSTANCE}

@@ -2,6 +2,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: oc-$${OCINSTANCE}
+  namespace: opencart
   labels:
     app.kubernetes.io/name: opencart
     app.kubernetes.io/instance: oc-$${OCINSTANCE}
