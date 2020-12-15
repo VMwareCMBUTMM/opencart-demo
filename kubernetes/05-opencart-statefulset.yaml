@@ -121,18 +121,18 @@ spec:
               cpu: 300m
               memory: 512Mi
           volumeMounts:
-            - name: oc-$${OCINSTANCE}-data
+            - name: oc-data
               mountPath: /bitnami/opencart
               subPath: opencart
-            - name: oc-$${OCINSTANCE}-data
+            - name: oc-data
               mountPath: /bitnami/opencart_storage
               subPath: opencart_storage
   volumeClaimTemplates:
   - metadata:
-      name: oc-$${OCINSTANCE}-data
+      name: oc-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "vsan-default-storage-policy (default)"
+      storageClassName: vsan-default-storage-policy
       resources:
         requests:
           storage: 2Gi
