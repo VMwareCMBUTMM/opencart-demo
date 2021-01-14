@@ -13,7 +13,7 @@ spec:
       app.kubernetes.io/instance: oc-$${OCINSTANCE}
   strategy:
     type: RollingUpdate
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
