@@ -1,24 +1,23 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: oc-$${OCINSTANCE}
+  name: oc-smcgeown
   namespace: opencart
   labels:
     app.kubernetes.io/name: opencart
-    app.kubernetes.io/instance: oc-$${OCINSTANCE}
+    app.kubernetes.io/instance: oc-smcgeown
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: opencart
-      app.kubernetes.io/instance: oc-$${OCINSTANCE}
-  strategy:
-    type: RollingUpdate
+      app.kubernetes.io/instance: oc-smcgeown
+  serviceName: opencart-service
   replicas: 1
   template:
     metadata:
       labels:
         app.kubernetes.io/name: opencart
-        app.kubernetes.io/instance: oc-$${OCINSTANCE}
+        app.kubernetes.io/instance: oc-smcgeown
       annotations:
         prometheus.io/port: "9117"
         prometheus.io/scrape: "true"
@@ -33,20 +32,19 @@ spec:
                 labelSelector:
                   matchLabels:
                     app.kubernetes.io/name: opencart
-                    app.kubernetes.io/instance: oc-$${OCINSTANCE}
+                    app.kubernetes.io/instance: oc-smcgeown
                 namespaces:
                   - opencart
                 topologyKey: kubernetes.io/hostname
               weight: 1
         nodeAffinity:
-          
       hostAliases:
         - ip: "127.0.0.1"
           hostnames:
             - "status.localhost"
       initContainers:
       containers:
-        - name: oc-$${OCINSTANCE}
+        - name: oc-smcgeown
           image: docker.io/bitnami/opencart:3.0.3-6-debian-10-r124
           imagePullPolicy: "IfNotPresent"
           securityContext:
@@ -61,28 +59,28 @@ spec:
             - name: APACHE_HTTPS_PORT_NUMBER
               value: "8443"
             - name: OPENCART_DATABASE_HOST
-              value: "$${DBHOST}"
+              value: "10.176.150.106"
             - name: OPENCART_DATABASE_PORT_NUMBER
               value: "3306"
             - name: OPENCART_DATABASE_NAME
               value: "opencart"
             - name: OPENCART_DATABASE_USER
-              value: "$${OCUSER}"
+              value: "ocuser"
             - name: OPENCART_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: oc-$${OCINSTANCE}-externaldb
+                  name: oc-smcgeown-externaldb
                   key: mariadb-password
             - name: OPENCART_SKIP_BOOTSTRAP
               value: "yes"
             - name: OPENCART_HOST
-              value: "oc-$${OCINSTANCE}.opencart.moad.cmbu.local"
+              value: "oc-smcgeown.opencart.moad.cmbu.local"
             - name: OPENCART_USERNAME
-              value: "$${OCUSER}"
+              value: "ocuser"
             - name: OPENCART_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: oc-$${OCINSTANCE}-secret
+                  name: oc-smcgeown-secret
                   key: opencart-password
             - name: OPENCART_EMAIL
               value: "user@example.com"
@@ -98,7 +96,7 @@ spec:
               port: http
               httpHeaders:
                 - name: Host
-                  value: "oc-$${OCINSTANCE}.opencart.tkg-cluster-03.cmbu.local"
+                  value: "oc-smcgeown.opencart.tkg-cluster-03.cmbu.local"
             initialDelaySeconds: 120
             periodSeconds: 10
             timeoutSeconds: 5
@@ -110,7 +108,7 @@ spec:
               port: http
               httpHeaders:
                 - name: Host
-                  value: "oc-$${OCINSTANCE}.opencart.tkg-cluster-03.cmbu.local"
+                  value: "oc-smcgeown.opencart.tkg-cluster-03.cmbu.local"
             initialDelaySeconds: 30
             periodSeconds: 5
             timeoutSeconds: 3
@@ -127,6 +125,12 @@ spec:
             - name: oc-data
               mountPath: /bitnami/opencart_storage
               subPath: opencart_storage
+            - name: ssl-certs
+              mountPath: /opt/bitnami/apache/conf/bitnami/certs
+              readOnly: true
+      volumes:
+        - name: ssl-certs
+          secret: 
   volumeClaimTemplates:
   - metadata:
       name: oc-data

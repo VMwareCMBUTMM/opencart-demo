@@ -120,14 +120,4 @@ spec:
             requests:
               cpu: 300m
               memory: 512Mi
-          volumeMounts:
-            - name: opencart-data
-              mountPath: /bitnami/opencart
-              subPath: opencart
-            - name: opencart-data
-              mountPath: /bitnami/opencart_storage
-              subPath: opencart_storage
-      volumes:
-        - name: opencart-data
-          persistentVolumeClaim:
-            claimName: oc-$${OCINSTANCE}
+
