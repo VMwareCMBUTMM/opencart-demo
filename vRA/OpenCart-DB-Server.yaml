@@ -33,15 +33,6 @@ inputs:
     description: Size of Nodes
     default: medium
     title: Node Size
-  clusterSize:
-    type: string
-    enum:
-      - small
-      - medium
-      - large
-    description: Front End Cluster Size
-    default: small
-    title: Front End Cluster Size
   username:
     type: string
     description: The username you would like to have for the installation.
@@ -154,8 +145,6 @@ resources:
           - cd /tmp
           - git clone https://github.com/mcclanc/opencart-demo.git /tmp/opencart
           - mysql -u $USER -e 'source /tmp/opencart/install/opencart.sql'
-          - 
-          
           - wget http://fielddemo-content.cmbu.local/files/VMware-Log-Insight-Agent-8.0.0-14743436_10.196.206.21.bin
           - chmod +x VMware-Log-Insight-Agent-8.0.0-14743436_10.196.206.21.bin
           - LIAGENT_SSL=no /tmp/VMware-Log-Insight-Agent-8.0.0-14743436_10.196.206.21.bin
