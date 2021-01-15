@@ -1,0 +1,133 @@
+---
+project: Field Demo
+kind: PIPELINE
+name: MOAD - Deploy OpenCart Kubernetes
+icon: organization,left, is-pink
+enabled: true
+concurrency: 10
+input:
+  OpenCartAdminPassword: VMware1!
+  OpenCartAdminUserName: ocuser
+  OpenCartDatabasePassword: VMware1!
+_inputMeta:
+  OpenCartDatabasePassword:
+    mandatory: true
+    description: ''
+  OpenCartAdminUserName:
+    mandatory: true
+    description: OpenCart Admin User Name
+  OpenCartAdminPassword:
+    mandatory: true
+    description: OpenCart Admin Password
+workspace:
+  endpoint: smcg-sc2-docker-host - TLS
+  image: python
+  registry: ''
+  path: ''
+  autoCloneForTrigger: false
+  limits:
+    cpu: 1.0
+    memory: 512
+stageOrder:
+- Deploy-MySQL
+- Deploy-OpenCart
+stages:
+  Deploy-MySQL:
+    taskOrder:
+    - MySQL Server
+    tasks:
+      MySQL Server:
+        type: Blueprint
+        input:
+          action: CreateDeployment
+          blueprint: OpenCart DB Server
+          deploymentName: oc-db-${executionId}
+          parameters:
+            image: Ubuntu-18
+            environment: vSphere
+            password: ${input.OpenCartAdminPassword}
+            size: medium
+            monitoring: telegraf
+            username: ${input.OpenCartAdminUserName}
+          version: '2'
+          filepath: ''
+          apiToken: ${var.MOAD-API-Token}
+  Deploy-OpenCart:
+    taskOrder:
+    - EncodeAdminPassword,EncodeDBPassword
+    - 01-externaldb-secrets,02-opencart-secrets
+    - 05-opencart-deployment
+    - 04-opencart-service
+    tasks:
+      EncodeAdminPassword:
+        type: Custom
+        input:
+          name: Base64Encode
+          version: '0.1'
+          properties:
+            stringToEncode: ${input.OpenCartAdminPassword}
+      02-opencart-secrets:
+        type: K8S
+        endpoints:
+          scm: OpenCart
+          kubernetesServer: VCF - TKG - tkg-workload-03
+        input:
+          action: CREATE
+          timeout: 5
+          continueOnConflict: false
+          filePath: kubernetes/02-opencart-secrets.yaml
+          scmConstants:
+            OCINSTANCE: ${executionId}
+            OCPASSWORD: ${Deploy-OpenCart.EncodeAdminPassword.output.properties.encodedString}
+          yaml: ''
+      EncodeDBPassword:
+        type: Custom
+        input:
+          name: Base64Encode
+          version: '0.1'
+          properties:
+            stringToEncode: ${input.OpenCartDatabasePassword}
+      04-opencart-service:
+        type: K8S
+        ignoreFailure: true
+        endpoints:
+          scm: OpenCart
+          kubernetesServer: VCF - TKG - tkg-workload-03
+        input:
+          action: CREATE
+          timeout: 5
+          continueOnConflict: false
+          filePath: kubernetes/04-opencart-service.yaml
+          scmConstants:
+            OCINSTANCE: ${executionId}
+          yaml: ''
+      01-externaldb-secrets:
+        type: K8S
+        preCondition: ${executionId}
+        endpoints:
+          scm: OpenCart
+          kubernetesServer: VCF - TKG - tkg-workload-03
+        input:
+          action: CREATE
+          timeout: 5
+          continueOnConflict: false
+          filePath: kubernetes/01-externaldb-secrets.yaml
+          scmConstants:
+            OCINSTANCE: ${executionId}
+            DBPASSWORD: ${Deploy-OpenCart.EncodeAdminPassword.output.properties.encodedString}
+          yaml: ''
+      05-opencart-deployment:
+        type: K8S
+        endpoints:
+          scm: OpenCart
+          kubernetesServer: VCF - TKG - tkg-workload-03
+        input:
+          action: CREATE
+          timeout: 5
+          continueOnConflict: false
+          filePath: kubernetes/05-opencart-deployment.yaml
+          scmConstants:
+            OCINSTANCE: ${executionId}
+            OCUSER: ${input.OpenCartAdminUserName}
+            DBHOST: ${Deploy-MySQL.MySQL Server.output.deploymentDetails.resources.mysql.address}
+          yaml: ''
