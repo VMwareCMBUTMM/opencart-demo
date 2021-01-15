@@ -1,5 +1,3 @@
-formatVersion: 1
-name: OpenCart Database Instance
 version: 1
 inputs:
   environment:
@@ -51,7 +49,7 @@ resources:
     metadata:
       layoutPosition:
         - 0
-        - 1
+        - 0
     properties:
       agent: '${input.monitoring ? "telegraf" : "none"}'
       flavor: '${input.size}'
@@ -143,8 +141,8 @@ resources:
           - mysql -u root -e 'USE opencart'
           - mysql -u root -e 'flush privileges'
           - cd /tmp
-          - git clone https://github.com/mcclanc/opencart-demo.git /tmp/opencart
-          - mysql -u $USER -e 'source /tmp/opencart/install/opencart.sql'
+          - git clone https://github.com/VMwareCMBUTMM/opencart-demo.git /tmp/opencart
+          - mysql -u $USER -e 'source /tmp/opencart/opencart/opencart.sql'
           - wget http://fielddemo-content.cmbu.local/files/VMware-Log-Insight-Agent-8.0.0-14743436_10.196.206.21.bin
           - chmod +x VMware-Log-Insight-Agent-8.0.0-14743436_10.196.206.21.bin
           - LIAGENT_SSL=no /tmp/VMware-Log-Insight-Agent-8.0.0-14743436_10.196.206.21.bin
