@@ -2,6 +2,8 @@ name: Docker
 
 on:
   push:
+    paths:
+      - 'Dockerfile'
     # Publish `master` as Docker `latest` image.
     branches:
       - master
