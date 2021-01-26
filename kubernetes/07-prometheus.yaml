@@ -52,8 +52,8 @@ data:
     scrape_configs:
       - job_name: 'telegraf-exporter'
         static_configs:
-        - targets: ['$${CONTROLNODEIP}:31196' ]
-        - targets: ['$${WORKERNODEIP}:31196' ] 
+        - targets: ['$${controlPlaneIP}:31196' ]
+        - targets: ['$${workerIP}:31196' ] 
 
 ---
 apiVersion: apps/v1
