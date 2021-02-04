@@ -16,12 +16,16 @@ rules:
   resources:
   - ingresses
   verbs: ["get", "list", "watch"]
+
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: prometheus
   namespace: monitoring
+imagePullSecrets:
+- name: cmbu-docker-credentials
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -35,6 +39,9 @@ subjects:
 - kind: ServiceAccount
   name: prometheus
   namespace: monitoring
+imagePullSecrets:
+- name: cmbu-docker-credentials
+
 ---
 apiVersion: apps/v1
 kind: Deployment
