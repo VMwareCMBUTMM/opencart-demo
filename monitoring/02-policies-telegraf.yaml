@@ -127,6 +127,8 @@ spec:
         - mountPath: /etc/telegraf
           name: telegraf-d
       serviceAccountName: vrops-mp-user
+      imagePullSecrets:
+      - name: cmbu-docker-credentials
       terminationGracePeriodSeconds: 30
       tolerations:
       - effect: NoSchedule
