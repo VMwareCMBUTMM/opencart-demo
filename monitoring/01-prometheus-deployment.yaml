@@ -16,16 +16,6 @@ rules:
   resources:
   - ingresses
   verbs: ["get", "list", "watch"]
-
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: prometheus
-  namespace: monitoring
-imagePullSecrets:
-- name: cmbu-docker-credentials
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -57,11 +47,9 @@ spec:
         app: prometheus
     spec:
       serviceAccountName: prometheus
-      imagePullSecrets:
-      - name: cmbu-docker-credentials
       containers:
       - name: prometheus
-        image: prom/prometheus
+        image: harbor-repo.vmware.com/dockerhub-proxy-cache/prom/prometheus
         ports:
         - containerPort: 9090
           name: default

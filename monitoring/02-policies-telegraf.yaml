@@ -110,7 +110,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
-        image: telegraf:1.16.0
+        image: harbor-repo.vmware.com/dockerhub-proxy-cache/library/telegraf:1.16.0
         name: vrops-telegraf-k8s-container
         ports:
         - containerPort: 9273
@@ -127,8 +127,6 @@ spec:
         - mountPath: /etc/telegraf
           name: telegraf-d
       serviceAccountName: vrops-mp-user
-      imagePullSecrets:
-      - name: cmbu-docker-credentials
       terminationGracePeriodSeconds: 30
       tolerations:
       - effect: NoSchedule
