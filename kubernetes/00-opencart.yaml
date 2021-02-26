@@ -78,7 +78,7 @@ spec:
       containers:
         - name: oc-$${OCINSTANCE}
           image: pull harbor-repo.vmware.com/dockerhub-proxy-cache/vmwarecmbu/oc-moad:latest
-          imagePullPolicy: "always"
+          imagePullPolicy: "Always"
           securityContext:
             runAsUser: 1001
           env:
