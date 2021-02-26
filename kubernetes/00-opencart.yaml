@@ -4,6 +4,20 @@ kind: Namespace
 metadata:
   name: opencart-$${OCINSTANCE}
 ---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rolebinding-default-privileged-sa-ns_opencart
+  namespace: opencart-$${OCINSTANCE}
+roleRef:
+  kind: ClusterRole
+  name: psp:vmware-system-privileged
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: Group
+  apiGroup: rbac.authorization.k8s.io
+  name: system:serviceaccounts
+---
 apiVersion: v1
 kind: Secret
 metadata:
@@ -77,7 +91,7 @@ spec:
       initContainers:
       containers:
         - name: oc-$${OCINSTANCE}
-          image: pull harbor-repo.vmware.com/dockerhub-proxy-cache/vmwarecmbu/oc-moad:latest
+          image: harbor-repo.vmware.com/dockerhub-proxy-cache/vmwarecmbu/oc-moad:latest
           imagePullPolicy: "Always"
           securityContext:
             runAsUser: 1001
